@@ -36,12 +36,14 @@ public class MainActivity extends Activity {
         sharedPref = getApplicationContext().getSharedPreferences("configuration", 0);
         String hostname = sharedPref.getString("hostname", "Default_Hostname");
         mEditHostname.setHint(hostname);
-        mTextHostname.setText("Hostname: " + hostname);
+        hostname = "Hostname: " + hostname;
+        mTextHostname.setText(hostname);
         String server = sharedPref.getString("server", "Default_Server");
         mEditServer.setHint(server);
         String port = sharedPref.getString("port", "Default_Port");
         mEditPort.setHint(port);
-        mTextServer.setText("Server: " + server + ":" + port);
+        server = "Server: " + server + ":" + port;
+        mTextServer.setText(server);
 
         mButtonSave.setOnClickListener(
                 new View.OnClickListener()
@@ -57,7 +59,6 @@ public class MainActivity extends Activity {
                         mEditServer.setHint(mEditServer.getText().toString());
                         mEditPort.setHint(mEditPort.getText().toString());
                         mEditHostname.setHint(mEditHostname.getText().toString());
-
                         String server = "Server: " + mEditServer.getText().toString() +
                                 ":" + mEditPort.getText().toString();
                         mTextServer.setText(server);

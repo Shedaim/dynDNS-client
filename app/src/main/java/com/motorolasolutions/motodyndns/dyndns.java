@@ -18,7 +18,7 @@ import org.json.JSONObject;
 
 public class dyndns extends Service {
 
-    private static String TAG = "dyndns service";
+    private static String TAG = "dynDNS service";
     public SharedPreferences myPrefs;
 
     @Override
@@ -30,13 +30,11 @@ public class dyndns extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // TODO Auto-generated method stub
-        Log.d(TAG, "dyndns service started");
+        Log.d(TAG, "dynDNS service started");
 
         while (true) {
             myPrefs = getSharedPreferences("configuration", MODE_PRIVATE);
             String hostname = myPrefs.getString("hostname", "Default");
-            String server = myPrefs.getString("server", "Default");
-            String port = myPrefs.getString("port", "Default");
             long endTime = System.currentTimeMillis() + 5 * 1000;
             while (System.currentTimeMillis() < endTime) {
                 synchronized (this) {
@@ -62,7 +60,7 @@ public class dyndns extends Service {
     public void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-        Log.d(TAG, "dyndns service destroyed");
+        Log.d(TAG, "dynDNS service destroyed");
 
     }
 
