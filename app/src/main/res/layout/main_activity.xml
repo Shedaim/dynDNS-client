@@ -1,33 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/ServerEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="13dp"
+        android:ems="10"
+        android:hint="@string/default_server"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/PortEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/ServerEdit"
         android:ems="10"
         android:hint="@string/default_hostname"
-        android:layout_margin="16dp"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/HostnameEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/PortEdit"
+        android:ems="10"
+        android:hint="@string/default_hostname"
         android:inputType="textPersonName" />
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
+        android:id="@+id/SaveButton"
+        android:layout_width="176dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/StartButton"
         android:text="@string/save" />
 
+    <Button
+        android:id="@+id/StartButton"
+        android:layout_width="179dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/TitleText"
+        android:layout_alignParentEnd="true"
+        android:text="@string/start" />
+
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/HostnameText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:textStyle="bold"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:text="@string/hostname"
         android:textAlignment="center"
-        android:text="@string/hostname" />
-</LinearLayout>
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/TitleText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ServerText"
+        android:layout_alignParentStart="true"
+        android:text="@string/saved_conf"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/ServerText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/HostnameText"
+        android:layout_alignParentStart="true"
+        android:text="@string/server"
+        android:textAlignment="center"
+        android:textStyle="bold" />
+</RelativeLayout>

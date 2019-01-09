@@ -33,8 +33,10 @@ public class dyndns extends Service {
         Log.d(TAG, "dyndns service started");
 
         while (true) {
-            myPrefs = getSharedPreferences("hostname", MODE_PRIVATE);
-            String StoredValue = myPrefs.getString("hostname", "Default");
+            myPrefs = getSharedPreferences("configuration", MODE_PRIVATE);
+            String hostname = myPrefs.getString("hostname", "Default");
+            String server = myPrefs.getString("server", "Default");
+            String port = myPrefs.getString("port", "Default");
             long endTime = System.currentTimeMillis() + 5 * 1000;
             while (System.currentTimeMillis() < endTime) {
                 synchronized (this) {
@@ -48,14 +50,11 @@ public class dyndns extends Service {
             JSONObject js = new JSONObject();
 
             try {
-                js.put("hostname", StoredValue);
+                js.put("hostname", hostname);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Log.d(TAG, "going to send");
-            Log.d(TAG, String.valueOf(js));
             sendDynDnsUpdate(js);
-            Log.d(TAG, "sent");
         }
     }
 
@@ -70,14 +69,16 @@ public class dyndns extends Service {
     public void sendDynDnsUpdate(JSONObject js) {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://dfint.lxn500.com:1024";
-
-        // Request a string response from the provided URL.
+        myPrefs = getSharedPreferences("configuration", MODE_PRIVATE);
+        String url = (myPrefs.getString("server", "http://dns.com") + ":" +
+                myPrefs.getString("port", "80")); //Name of DNS server
+        Log.d(TAG, "Sending dynDNS message: " + js + " to URL: " + url);
+        // Create JSON request containing {"hostname":hostname}
         JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url, js,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(final JSONObject response) {
-                        Log.d(TAG, String.valueOf(response));
+                        Log.d(TAG, "Response message: " + String.valueOf(response));
                     }
                 },
                 new Response.ErrorListener() {
@@ -87,7 +88,7 @@ public class dyndns extends Service {
                     }
                 });
 
-// Add the request to the RequestQueue.
+        // Add the request to the RequestQueue.
         queue.add(postRequest);
     }
 }
