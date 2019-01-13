@@ -38,7 +38,7 @@ public class dyndns extends Service {
         Log.d(TAG, "dynDNS service started");
         mainHandler = new Handler(getApplicationContext().getMainLooper());
         timer = new Timer();
-        timer.schedule(new MyTimerTask(), 10000, 10000);
+        timer.schedule(new MyTimerTask(), 60000, 60000);
         return START_STICKY;
     }
 
@@ -94,7 +94,7 @@ public class dyndns extends Service {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, "Error sending message: " + js + "to URL: " + url);
+                        Log.d(TAG, "Error sending message: " + js + " to URL: " + url);
                     }
                 });
         // Add the request to the RequestQueue.
