@@ -26,8 +26,9 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".MyBroadcastReceiver"  android:exported="true">
+        <receiver android:name=".dynDNSBroadcastReceiver"  android:enabled="true" android:exported="true">
             <intent-filter>
+                <action android:name="restartService"/>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>

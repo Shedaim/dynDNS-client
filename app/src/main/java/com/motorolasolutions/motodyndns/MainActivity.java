@@ -1,6 +1,8 @@
 package com.motorolasolutions.motodyndns;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +20,8 @@ public class MainActivity extends Activity {
     public Button mButtonSave, mButtonStart;
     public EditText mEditServer, mEditHostname, mEditPort;
     public TextView mTextHostname, mTextServer, mTitleText;
+    Intent mServiceIntent;
+    private dyndns mYourService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +36,9 @@ public class MainActivity extends Activity {
         mTextHostname = findViewById(R.id.HostnameText);
         mTextServer = findViewById(R.id.ServerText);
         mTitleText =  findViewById(R.id.TitleText);
+
+        mYourService = new dyndns();
+        mServiceIntent = new Intent(this, mYourService.getClass());
 
         sharedPref = getApplicationContext().getSharedPreferences("configuration", 0);
         String hostname = sharedPref.getString("hostname", "Default_Hostname");
@@ -72,8 +79,29 @@ public class MainActivity extends Activity {
                     public void onClick(View view)
                     {
                         Log.d(TAG, "Starting service");
-                        startService(new Intent(getApplication(), dyndns.class));
+                        if (!isMyServiceRunning(mYourService.getClass())) {
+                            startService(mServiceIntent);
+                        }
+                        //startService(new Intent(getApplication(), dyndns.class));
                     }
                 });
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i ("Service status", "Running");
+                return true;
+            }
+        }
+        Log.i ("Service status", "Not running");
+        return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(mServiceIntent);
+        super.onDestroy();
     }
 }
