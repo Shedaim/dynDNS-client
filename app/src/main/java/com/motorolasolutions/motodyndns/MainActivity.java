@@ -21,7 +21,6 @@ public class MainActivity extends Activity {
     public EditText mEditServer, mEditHostname, mEditPort;
     public TextView mTextHostname, mTextServer, mTitleText;
     Intent mServiceIntent;
-    private dyndns mYourService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +36,14 @@ public class MainActivity extends Activity {
         mTextServer = findViewById(R.id.ServerText);
         mTitleText =  findViewById(R.id.TitleText);
 
-        mYourService = new dyndns();
-        mServiceIntent = new Intent(this, mYourService.getClass());
+        dyndns mDynDns = new dyndns();
+        mServiceIntent = new Intent(this, mDynDns.getClass());
+        Log.d(TAG, "Starting service");
+        if (!isMyServiceRunning(mDynDns.getClass())) {
+            startService(mServiceIntent);
+        }
 
-        sharedPref = getApplicationContext().getSharedPreferences("configuration", 0);
+        sharedPref = getApplicationContext().getSharedPreferences("configuration", MODE_MULTI_PROCESS );
         String hostname = sharedPref.getString("hostname", "Default_Hostname");
         mEditHostname.setHint(hostname);
         hostname = "Hostname: " + hostname;
@@ -58,18 +61,15 @@ public class MainActivity extends Activity {
                     public void onClick(View view)
                     {
                         Log.d(TAG, "Saving configuration.");
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString("server", mEditServer.getText().toString());
-                        editor.putString("port", mEditPort.getText().toString());
-                        editor.putString("hostname", mEditHostname.getText().toString());
-                        editor.commit();
-                        mEditServer.setHint(mEditServer.getText().toString());
-                        mEditPort.setHint(mEditPort.getText().toString());
-                        mEditHostname.setHint(mEditHostname.getText().toString());
-                        String server = "Server: " + mEditServer.getText().toString() +
-                                ":" + mEditPort.getText().toString();
+                        String server = saveParam("server", mEditServer);
+                        String port = saveParam("port", mEditPort);
+                        String hostname = saveParam("hostname", mEditHostname);
+                        mEditServer.setHint(server);
+                        mEditPort.setHint(port);
+                        mEditHostname.setHint(hostname);
+                        server = "Server: " + server + ":" + port;
                         mTextServer.setText(server);
-                        String hostname = "Hostname: " + mEditHostname.getText().toString();
+                        hostname = "Hostname: " + hostname;
                         mTextHostname.setText(hostname);
                     }
                 });
@@ -78,29 +78,48 @@ public class MainActivity extends Activity {
                 {
                     public void onClick(View view)
                     {
-                        Log.d(TAG, "Starting service");
-                        if (!isMyServiceRunning(mYourService.getClass())) {
-                            startService(mServiceIntent);
-                        }
-                        //startService(new Intent(getApplication(), dyndns.class));
+                        stopService(mServiceIntent);
                     }
                 });
     }
 
+    private String saveParam(String name, EditText text){
+        SharedPreferences.Editor editor = sharedPref.edit();
+        String result = text.getText().toString();
+        if (result.isEmpty()){
+            result = sharedPref.getString(name, "Default");
+            editor.putString(name, result);
+        }
+        else{
+            editor.putString(name, result);
+        }
+        editor.apply();
+        return result;
+    }
+
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        assert manager != null;
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
-                Log.i ("Service status", "Running");
+                Log.d(TAG, serviceClass.getName());
+                Log.d (TAG, "Service status: Running");
                 return true;
             }
         }
-        Log.i ("Service status", "Not running");
+        Log.d (TAG, "Service status: Not running");
         return false;
     }
 
     @Override
+    protected void onPause() {
+        Log.d (TAG, "Application paused");
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
+        Log.d (TAG, "Application destroyed");
         stopService(mServiceIntent);
         super.onDestroy();
     }

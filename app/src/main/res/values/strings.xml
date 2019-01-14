@@ -10,6 +10,6 @@
     <string name="default_server">Default server</string>
     <string name="save">Save</string>
     <string name="server">Server: </string>
-    <string name="start">Start Service</string>
+    <string name="restart">Restart Service</string>
     <string name="saved_conf">Saved Configuration</string>
 </resources>
