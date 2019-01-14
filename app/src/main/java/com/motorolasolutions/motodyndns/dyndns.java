@@ -27,8 +27,8 @@ import java.util.TimerTask;
 
 public class dyndns extends Service {
 
-    private static String TAG = "dynDNS service";
-    public SharedPreferences myPrefs;
+    private static final String TAG = "dynDNS service";
+    private SharedPreferences myPrefs;
     private Handler mainHandler;
     private Timer timer;
 
@@ -38,6 +38,7 @@ public class dyndns extends Service {
         return null;
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Override
     public void onCreate() {
         super.onCreate();
@@ -63,7 +64,7 @@ public class dyndns extends Service {
         if (!intent.hasExtra("conn_changed")){
             mainHandler = new Handler(getApplicationContext().getMainLooper());
             timer = new Timer();
-            timer.schedule(new MyTimerTask(js, url), 60000, 60000);
+            timer.schedule(new MyTimerTask(js, url), 600000, 600000);
         }
         return START_STICKY;
     }
@@ -113,7 +114,7 @@ public class dyndns extends Service {
         }
     }
 
-    public void sendDynDnsUpdate(final JSONObject js, final String url) {
+    private void sendDynDnsUpdate(final JSONObject js, final String url) {
         Log.d(TAG, "Sending dynDNS message: " + js + " to URL: " + url);
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);

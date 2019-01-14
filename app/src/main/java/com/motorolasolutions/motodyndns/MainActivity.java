@@ -16,11 +16,15 @@ public class MainActivity extends Activity {
 
 
     private static final String TAG = "MainActivity";
-    public SharedPreferences sharedPref;
-    public Button mButtonSave, mButtonStart;
-    public EditText mEditServer, mEditHostname, mEditPort;
-    public TextView mTextHostname, mTextServer, mTitleText;
-    Intent mServiceIntent;
+    private SharedPreferences sharedPref;
+    private Button mButtonSave;
+    private Button mButtonStart;
+    private EditText mEditServer;
+    private EditText mEditHostname;
+    private EditText mEditPort;
+    private TextView mTextHostname;
+    private TextView mTextServer;
+    private Intent mServiceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +38,6 @@ public class MainActivity extends Activity {
         mEditHostname = findViewById(R.id.HostnameEdit);
         mTextHostname = findViewById(R.id.HostnameText);
         mTextServer = findViewById(R.id.ServerText);
-        mTitleText =  findViewById(R.id.TitleText);
 
         dyndns mDynDns = new dyndns();
         mServiceIntent = new Intent(this, mDynDns.getClass());
