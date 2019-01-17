@@ -25,6 +25,12 @@ public class dynDNSBroadcastReceiver extends BroadcastReceiver {
                 context.startService(new_intent);
                 break;
             }
+            case "android.intent.action.BOOT_COMPLETED":{
+                Log.d(TAG, "Received boot intent --> Starting service on boot.");
+                Intent new_intent = new Intent(context, dyndns.class);
+                context.startService(new_intent);
+                break;
+            }
             default:
                 Log.d(TAG, "Received broadcast without action.");
                 break;

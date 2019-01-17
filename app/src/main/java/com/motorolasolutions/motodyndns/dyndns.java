@@ -16,7 +16,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
@@ -28,7 +28,6 @@ import java.util.TimerTask;
 public class dyndns extends Service {
 
     private static final String TAG = "dynDNS service";
-    private SharedPreferences myPrefs;
     private Handler mainHandler;
     private Timer timer;
 
@@ -42,14 +41,14 @@ public class dyndns extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        //startForeground(1, new Notification());
+        startForeground(1, new Notification());
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "dynDNS service started");
         //myPrefs = getApplicationContext().getSharedPreferences("configuration", MODE_MULTI_PROCESS );
-        myPrefs = getSharedPreferences("configuration", MODE_MULTI_PROCESS );
+        SharedPreferences myPrefs = getSharedPreferences("configuration", MODE_MULTI_PROCESS);
         String hostname = myPrefs.getString("hostname", "Default");
         JSONObject js = new JSONObject();
         try {
@@ -57,11 +56,11 @@ public class dyndns extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        myPrefs = getSharedPreferences("configuration", MODE_MULTI_PROCESS );
+        myPrefs = getSharedPreferences("configuration", MODE_MULTI_PROCESS);
         String url = (myPrefs.getString("server", "http://dns.com") + ":" +
                 myPrefs.getString("port", "80")); //Name of DNS server
         sendDynDnsUpdate(js, url);
-        if (!intent.hasExtra("conn_changed")){
+        if (!intent.hasExtra("conn_changed")) {
             mainHandler = new Handler(getApplicationContext().getMainLooper());
             timer = new Timer();
             timer.schedule(new MyTimerTask(js, url), 600000, 600000);
@@ -88,21 +87,47 @@ public class dyndns extends Service {
         PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(),
                 1001, broadcastIntent, PendingIntent.FLAG_ONE_SHOT);
 
-        ((AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE)).
+        ((AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE)).
                 set(AlarmManager.ELAPSED_REALTIME,
-                        SystemClock.elapsedRealtime() +1000,
+                        SystemClock.elapsedRealtime() + 1000,
                         pi);
+    }
+
+    private void sendDynDnsUpdate(final JSONObject js, final String url) {
+        Log.d(TAG, "Sending dynDNS message: " + js + " to URL: " + url);
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                }) {
+            @Override
+            public byte[] getBody() {
+                return js.toString().getBytes();
+            }
+        };
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
 
     private class MyTimerTask extends TimerTask {
         private final JSONObject js;
         private final String url;
 
-        MyTimerTask (JSONObject js, String url)
-        {
+        MyTimerTask(JSONObject js, String url) {
             this.js = js;
             this.url = url;
         }
+
         @Override
         public void run() {
             mainHandler.post(new Runnable() {
@@ -112,27 +137,5 @@ public class dyndns extends Service {
                 }
             });
         }
-    }
-
-    private void sendDynDnsUpdate(final JSONObject js, final String url) {
-        Log.d(TAG, "Sending dynDNS message: " + js + " to URL: " + url);
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(this);
-        // Create JSON request containing {"hostname":hostname}
-        JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url, js,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(final JSONObject response) {
-                        Log.d(TAG, "Response message: " + String.valueOf(response));
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, "Error sending message: " + js + " to URL: " + url);
-                    }
-                });
-        // Add the request to the RequestQueue.
-        queue.add(postRequest);
     }
 }

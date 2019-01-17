@@ -17,8 +17,6 @@ public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
     private SharedPreferences sharedPref;
-    private Button mButtonSave;
-    private Button mButtonStart;
     private EditText mEditServer;
     private EditText mEditHostname;
     private EditText mEditPort;
@@ -31,8 +29,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.main_activity);
-        mButtonSave = findViewById(R.id.SaveButton);
-        mButtonStart = findViewById(R.id.StartButton);
+        Button mButtonSave = findViewById(R.id.SaveButton);
+        Button mButtonStart = findViewById(R.id.StartButton);
         mEditPort = findViewById(R.id.PortEdit);
         mEditServer = findViewById(R.id.ServerEdit);
         mEditHostname = findViewById(R.id.HostnameEdit);
