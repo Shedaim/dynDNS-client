@@ -49,7 +49,7 @@ public class dyndns extends Service {
         Log.d(TAG, "dynDNS service started");
         //myPrefs = getApplicationContext().getSharedPreferences("configuration", MODE_MULTI_PROCESS );
         SharedPreferences myPrefs = getSharedPreferences("configuration", MODE_MULTI_PROCESS);
-        String hostname = myPrefs.getString("hostname", "Default");
+        String hostname = myPrefs.getString("hostname", "hostname");
         JSONObject js = new JSONObject();
         try {
             js.put("hostname", hostname);
