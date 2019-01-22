@@ -33,7 +33,7 @@
 
     <TextView
         android:id="@+id/hostname_title"
-        android:layout_width="75dp"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_marginStart="16dp"

@@ -49,17 +49,24 @@ public class dyndns extends Service {
         Log.d(TAG, "dynDNS service started");
         //myPrefs = getApplicationContext().getSharedPreferences("configuration", MODE_MULTI_PROCESS );
         SharedPreferences myPrefs = getSharedPreferences("configuration", MODE_MULTI_PROCESS);
-        String hostname = myPrefs.getString("hostname", "hostname");
+        String hostname = myPrefs.getString("hostname", "");
+        String entry_type = myPrefs.getString("entry_type", "A");
+        String ttl = myPrefs.getString("ttl", "86400");
+        String domain = myPrefs.getString("domain", "dns.com");
         JSONObject js = new JSONObject();
         try {
             js.put("hostname", hostname);
+            js.put("entry_type", entry_type);
+            js.put("ttl", ttl);
+            js.put("domain", domain);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         myPrefs = getSharedPreferences("configuration", MODE_MULTI_PROCESS);
         String url = (myPrefs.getString("server", "http://dns.com") + ":" +
                 myPrefs.getString("port", "80")); //Name of DNS server
-        sendDynDnsUpdate(js, url);
+        // Send only if a hostname is configured
+        if (!hostname.isEmpty()) sendDynDnsUpdate(js, url);
         if (!intent.hasExtra("conn_changed")) {
             mainHandler = new Handler(getApplicationContext().getMainLooper());
             timer = new Timer();
@@ -71,7 +78,7 @@ public class dyndns extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        Log.d(TAG, "Task removed, stoping service");
+        Log.d(TAG, "Task removed, stopping service");
         stopSelf();
     }
 

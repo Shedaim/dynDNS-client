@@ -24,6 +24,7 @@ Opens a listening socket on port 1024 (may be manually changed to any other open
 Receives HTTP messages containing a JSON object and grabs the JSON_OBJ["hostname"] value.
 The IP address of the client is taken from the socket.
 The script then uses a Bash script to update the hostname + IP address on the Bind9 server.
+# In order to have this script running all the time, it is recommended to add a 'crontab' job or a similar tasker.
 
 Bash script:
 Runs "nsupdate" tool with the required key.
@@ -35,6 +36,7 @@ The script takes two values (hostname and IP address) and updates the entry on t
 This solution was created for a specific LAB need and may not be adapted for commercial use. The use of this application is at the responsibility of the user.
 Motorola Solutions is not be held accountable for the misuse of this application or any harm that may occur to a user's devices.
 For requested features, please contact the repository owner.
-
-
+Be aware that the project does not take into account many security issues, that may happen due to wrong or 'evil' input from the user.
+The consensus is that you know what you are doing and using this for personal use within an own local network.
+In addition, the bash script does not return errors, therefore the "Succesfully updated dynDNS entry" message in Logcat, only covers the communication with the Python script.
 
