@@ -1,5 +1,5 @@
-**##############################################################################################
-################################### Property of Motorola Solutions ###################################
+**############################################################################################
+################################ Property of Motorola Solutions ################################
 ##############################################################################################**
 MotoDynDNS is a Custom Dynamic DNS solution, used for updating a Dynamic DNS server with an Android device's IP address and hostname.
 The whole solution is based on a Bind9 Dynamic DNS, running on a RedHat7 platform, but should work on any platform running Bind9, "nsupdate" and Python (both v2 and v3).
@@ -32,7 +32,7 @@ Runs "nsupdate" tool with the required key.
 The script takes two values (hostname and IP address) and updates the entry on the Bind9 server.
 
 **##############################################################################################
-############################################ Disclaimer #########################################
+######################################## Disclaimer ######################################
 ##############################################################################################**
 This solution was created for a specific LAB need and may not be adapted for commercial use. The use of this application is at the responsibility of the user.
 Motorola Solutions is not be held accountable for the misuse of this application or any harm that may occur to a user's devices.
