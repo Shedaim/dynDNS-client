@@ -24,7 +24,8 @@ Opens a listening socket on port 1024 (may be manually changed to any other open
 Receives HTTP messages containing a JSON object and grabs the JSON_OBJ["hostname"] value.
 The IP address of the client is taken from the socket.
 The script then uses a Bash script to update the hostname + IP address on the Bind9 server.
-# In order to have this script running all the time, it is recommended to add a 'crontab' job or a similar tasker.
+### In order to have this script running all the time, it is recommended to add a 'crontab' job or a similar tasker.
+### This script is not provided as Open Source. If necessary, the repository owner, may be contacted to assist with code guidelines.
 
 Bash script:
 Runs "nsupdate" tool with the required key.
